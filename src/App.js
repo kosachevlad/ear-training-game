@@ -11,16 +11,18 @@ const DETUNE_LEVELS = [25]; // Cent deviation
 const EarTrainingGame = () => {
   const [notes, setNotes] = useState(NOTES)
   const [detunedNotes, setDetunedNotes] = useState([]);
-  const [selectedNote, setSelectedNote] = useState(null);
+  // const [selectedNote, setSelectedNote] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
     generateDetunedNotes();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     renderSheetMusic();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detunedNotes]);
 
   const generateDetunedNotes = () => {
@@ -43,7 +45,7 @@ const EarTrainingGame = () => {
   };
 
   const handleNoteSelection = (note) => {
-    setSelectedNote(note);
+    // setSelectedNote(note);
     const incorrect = detunedNotes.find((n) => n.deviation !== 0);
     if (note === incorrect.note) {
       setFeedback("Correct!");
