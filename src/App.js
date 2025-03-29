@@ -3,12 +3,13 @@ import * as Tone from "tone";
 import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
 // import { Cello, Violin } from "tonejs-instruments";
 
-// const NOTES = ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4", "G4", "F4", "E4", "D4", "C4", "B3", "A3"];
+const ANOTES = ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4", "G4", "F4", "E4", "D4", "C4", "B3", "A3"];
 const NOTES = [ "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"];
 
 const DETUNE_LEVELS = [25]; // Cent deviation
 
 const EarTrainingGame = () => {
+  const [notes, setNotes] = useState(NOTES)
   const [detunedNotes, setDetunedNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [feedback, setFeedback] = useState(null);
@@ -23,7 +24,7 @@ const EarTrainingGame = () => {
   }, [detunedNotes]);
 
   const generateDetunedNotes = () => {
-    let detuned = NOTES.map(note => ({ note, deviation: 0 }));
+    let detuned = notes.map(note => ({ note, deviation: 0 }));
     const index = Math.floor(Math.random() * (detuned.length - 1)) + 1;
     const deviation = DETUNE_LEVELS[Math.floor(Math.random() * DETUNE_LEVELS.length)];
     const direction = Math.random() > 0.5 ? "sharp" : "flat";
@@ -85,18 +86,24 @@ const EarTrainingGame = () => {
     voice.draw(context, stave);
   };
 
+  function switchNotes() {
+    setNotes(ANOTES);
+    generateDetunedNotes();
+  }
+
   return (
     <div>
       <h2>Ear Training Game</h2>
       <button onClick={playScale}>Play Scale</button>
       <div id="sheet"></div>
       <div className="piano">
-        {NOTES.map((note) => (
+        {notes.map((note) => (
           <button key={note} className="key" onClick={() => handleNoteSelection(note)}>{note}</button>
         ))}
       </div>
       {feedback && <p>{feedback}</p>}
       <p>Score: {score}</p>
+      <button onClick={switchNotes}>switch</button>
     </div>
   );
 };
