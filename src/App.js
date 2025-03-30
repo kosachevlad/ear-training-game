@@ -14,7 +14,7 @@ const SCALES = {
   "A Minor": ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4"],
 };
 
-const DETUNE_LEVELS = [25]; // Cent deviation
+const DETUNE_LEVELS = [30]; // Cent deviation
 
 const EarTrainingGame = () => {
   const [selectedScale, setSelectedScale] = useState("C Major");
