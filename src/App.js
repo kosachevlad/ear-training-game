@@ -1,28 +1,38 @@
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
 import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
-// import { Cello, Violin } from "tonejs-instruments";
 
-const ANOTES = ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4", "G4", "F4", "E4", "D4", "C4", "B3", "A3"];
-const NOTES = [ "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"];
+const SCALES = {
+  "C Major": ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"],
+  "D Major": ["D4", "E4", "F#4", "G4", "A4", "B4", "C#5", "D5"],
+  "E Major": ["E4", "F#4", "G#4", "A4", "B4", "C#5", "D#5", "E5"],
+  "F Major": ["F3", "G3", "A3", "Bb3", "C4", "D4", "E4", "F4"],
+  "G Major": ["G3", "A3", "B3", "C4", "D4", "E4", "F#4", "G4"],
+  "A Major": ["A3", "B3", "C#4", "D4", "E4", "F#4", "G#4", "A4"],
+  "B Major": ["B3", "C#4", "D#4", "E4", "F#4", "G#4", "A#4", "B4"],
+  "A Minor": ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4"],
+};
 
 const DETUNE_LEVELS = [25]; // Cent deviation
 
 const EarTrainingGame = () => {
-  const [notes, setNotes] = useState(NOTES)
+  const [selectedScale, setSelectedScale] = useState("C Major");
+  const [notes, setNotes] = useState(SCALES[selectedScale]);
   const [detunedNotes, setDetunedNotes] = useState([]);
-  // const [selectedNote, setSelectedNote] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [score, setScore] = useState(0);
+  const [synth, setSynth] = useState(null);
+
+  useEffect(() => {
+    setNotes(SCALES[selectedScale]);
+  }, [selectedScale]);
 
   useEffect(() => {
     generateDetunedNotes();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [notes]);
 
   useEffect(() => {
     renderSheetMusic();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detunedNotes]);
 
   const generateDetunedNotes = () => {
@@ -35,17 +45,26 @@ const EarTrainingGame = () => {
     setDetunedNotes(detuned);
   };
 
+  const stopPlayback = () => {
+    if (synth) {
+      synth.dispose();
+      setSynth(null);
+    }
+  };
+
   const playScale = async () => {
-    const synth = new Tone.Synth().toDestination();
+    stopPlayback();
+    const newSynth = new Tone.Synth().toDestination();
+    setSynth(newSynth);
+    
     for (let note of detunedNotes) {
       const freq = Tone.Frequency(note.note).toFrequency();
-      synth.triggerAttackRelease(freq * Math.pow(2, note.deviation / 1200), "1");
+      newSynth.triggerAttackRelease(freq * Math.pow(2, note.deviation / 1200), "1");
       await new Promise(res => setTimeout(res, 1000));
     }
   };
 
   const handleNoteSelection = (note) => {
-    // setSelectedNote(note);
     const incorrect = detunedNotes.find((n) => n.deviation !== 0);
     if (note === incorrect.note) {
       setFeedback("Correct!");
@@ -66,15 +85,15 @@ const EarTrainingGame = () => {
     stave.addClef("treble").setContext(context).draw();
     
     const notes = detunedNotes.map(n => {
-      let [letter, octave] = n.note.match(/[A-G]#?|\d+/g);
+      let [letter, accidental, octave] = n.note.match(/([A-G])(#|b)?(\d+)/).slice(1);
       let staveNote = new StaveNote({
         clef: "treble",
-        keys: [`${letter}/${octave}`],
+        keys: [`${letter}${accidental || ""}/${octave}`],
         duration: "q",
       });
       
-      if (n.note.includes("#")) {
-        staveNote.addModifier(new Accidental("#"));
+      if (accidental) {
+        staveNote.addModifier(new Accidental(accidental));
       }
       return staveNote;
     });
@@ -88,15 +107,18 @@ const EarTrainingGame = () => {
     voice.draw(context, stave);
   };
 
-  function switchNotes() {
-    setNotes(ANOTES);
-    generateDetunedNotes();
-  }
 
   return (
     <div>
       <h2>Ear Training Game</h2>
+      <label>Select Scale: </label>
+      <select onChange={(e) => setSelectedScale(e.target.value)} value={selectedScale}>
+        {Object.keys(SCALES).map(scale => (
+          <option key={scale} value={scale}>{scale}</option>
+        ))}
+      </select>
       <button onClick={playScale}>Play Scale</button>
+      <button onClick={stopPlayback}>Stop</button>
       <div id="sheet"></div>
       <div className="piano">
         {notes.map((note) => (
@@ -105,7 +127,6 @@ const EarTrainingGame = () => {
       </div>
       {feedback && <p>{feedback}</p>}
       <p>Score: {score}</p>
-      <button onClick={switchNotes}>switch</button>
     </div>
   );
 };
