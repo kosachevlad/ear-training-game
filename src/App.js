@@ -65,11 +65,17 @@ const EarTrainingGame = () => {
     }
   };
 
-  const handleNoteSelection = (note) => {
+  const handleNoteSelection = async (note) => {
     const incorrect = detunedNotes.find((n) => n.deviation !== 0);
     if (note === incorrect.note) {
       setFeedback("Correct!");
       setScore(score + 1);
+      
+      stopPlayback();
+      const newSynth = new Tone.Synth().toDestination();
+      newSynth.triggerAttackRelease(Tone.Frequency(incorrect.note).toFrequency() * Math.pow(2, incorrect.deviation / 1200), "1");
+      await new Promise(res => setTimeout(res, 1000));
+      newSynth.triggerAttackRelease(Tone.Frequency(incorrect.note).toFrequency(), "1");
     } else {
       setFeedback("Try Again");
     }
