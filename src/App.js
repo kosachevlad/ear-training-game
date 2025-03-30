@@ -118,7 +118,7 @@ const EarTrainingGame = () => {
 
   return (
     <div>
-      <h2>Ear Training Game!</h2>
+      <h2>Ear Training Game!!!</h2>
       <label>Select deviationLevel: </label>
       <select onChange={(e) => setDeviationLevel(e.target.value)} value={deviationLevel}>
         {[40, 35, 30, 25, 20, 15, 10].map(scale => (
