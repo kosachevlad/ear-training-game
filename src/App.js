@@ -23,6 +23,7 @@ const EarTrainingGame = () => {
   const [feedback, setFeedback] = useState(null);
   const [score, setScore] = useState(0);
   const [synth, setSynth] = useState(null);
+  const [deviationLevel, setDeviationLevel] = useState(30);
 
   useEffect(() => {
     setNotes(SCALES[selectedScale]);
@@ -42,7 +43,7 @@ const EarTrainingGame = () => {
     const deviation = DETUNE_LEVELS[Math.floor(Math.random() * DETUNE_LEVELS.length)];
     const direction = Math.random() > 0.5 ? "sharp" : "flat";
     
-    detuned[index].deviation = direction === "sharp" ? deviation : -deviation;
+    detuned[index].deviation = direction === "sharp" ? deviationLevel : -deviationLevel;
     setDetunedNotes(detuned);
   };
 
@@ -118,6 +119,12 @@ const EarTrainingGame = () => {
   return (
     <div>
       <h2>Ear Training Game</h2>
+      <label>Select deviationLevel: </label>
+      <select onChange={(e) => setDeviationLevel(e.target.value)} value={deviationLevel}>
+        {[40, 35, 30, 25, 20, 15, 10].map(scale => (
+          <option key={scale} value={scale}>{scale}</option>
+        ))}
+      </select>
       <label>Select Scale: </label>
       <select onChange={(e) => setSelectedScale(e.target.value)} value={selectedScale}>
         {Object.keys(SCALES).map(scale => (
