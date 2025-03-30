@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
 import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
