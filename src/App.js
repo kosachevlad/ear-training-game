@@ -87,9 +87,9 @@ const EarTrainingGame = () => {
     if (!div) return;
     div.innerHTML = "";
     const renderer = new Renderer(div, Renderer.Backends.SVG);
-    renderer.resize(400, 150);
+    renderer.resize(420, 150);
     const context = renderer.getContext();
-    const stave = new Stave(10, 40, 380);
+    const stave = new Stave(10, 40, 40  0);
     stave.addClef("treble").setContext(context).draw();
     
     const notes = detunedNotes.map(n => {
@@ -125,6 +125,8 @@ const EarTrainingGame = () => {
           <option key={scale} value={scale}>{scale}</option>
         ))}
       </select>
+      <br />
+      <br />
       <label>Select Scale: </label>
       <select onChange={(e) => setSelectedScale(e.target.value)} value={selectedScale}>
         {Object.keys(SCALES).map(scale => (
