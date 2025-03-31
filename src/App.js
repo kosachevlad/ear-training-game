@@ -1,4 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */ import React, { useState, useEffect } from "react"; import * as Tone from "tone"; import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from "react"; import * as Tone from "tone"; import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
 
 const SCALES = { "C Major": ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], "D Major": ["D4", "E4", "F#4", "G4", "A4", "B4", "C#5", "D5"], "E Major": ["E4", "F#4", "G#4", "A4", "B4", "C#5", "D#5", "E5"], "F Major": ["F3", "G3", "A3", "Bb3", "C4", "D4", "E4", "F4"], "G Major": ["G3", "A3", "B3", "C4", "D4", "E4", "F#4", "G4"], "A Major": ["A3", "B3", "C#4", "D4", "E4", "F#4", "G#4", "A4"], "B Major": ["B3", "C#4", "D#4", "E4", "F#4", "G#4", "A#4", "B4"], "A Minor": ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4"], };
 
