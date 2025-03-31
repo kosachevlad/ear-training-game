@@ -14,7 +14,7 @@ const SCALES = {
   "A Minor": ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4"],
 };
 
-const DETUNE_LEVELS = [30]; // Cent deviation
+// const DETUNE_LEVELS = [30]; // Cent deviation
 
 const EarTrainingGame = () => {
   const [selectedScale, setSelectedScale] = useState("C Major");
@@ -40,7 +40,7 @@ const EarTrainingGame = () => {
   const generateDetunedNotes = () => {
     let detuned = notes.map(note => ({ note, deviation: 0 }));
     const index = Math.floor(Math.random() * (detuned.length - 1)) + 1;
-    const deviation = DETUNE_LEVELS[Math.floor(Math.random() * DETUNE_LEVELS.length)];
+    // const deviation = DETUNE_LEVELS[Math.floor(Math.random() * DETUNE_LEVELS.length)];
     const direction = Math.random() > 0.5 ? "sharp" : "flat";
     
     detuned[index].deviation = direction === "sharp" ? deviationLevel : -deviationLevel;
@@ -118,9 +118,9 @@ const EarTrainingGame = () => {
 
   return (
     <div>
-      <h2>Ear Training Game!!!</h2>
+      <h2>Ear Training Game</h2>
       <label>Select deviationLevel: </label>
-      <select onChange={(e) => setDeviationLevel(e.target.value)} value={deviationLevel}>
+      <select onChange={(e) => setDeviationLevel(Number(e.target.value))} value={deviationLevel}>
         {[40, 35, 30, 25, 20, 15, 10].map(scale => (
           <option key={scale} value={scale}>{scale}</option>
         ))}
