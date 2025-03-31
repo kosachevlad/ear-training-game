@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react"; import * as Tone from "tone"; import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
+import React, { useState, useEffect } from "react";
+import * as Tone from "tone";
+import { Renderer, Stave, StaveNote, Voice, Formatter, Accidental } from "vexflow";
 
 const SCALES = { 
   "C Major": ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"], 
