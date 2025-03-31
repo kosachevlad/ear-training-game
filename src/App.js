@@ -89,7 +89,7 @@ const EarTrainingGame = () => {
     const renderer = new Renderer(div, Renderer.Backends.SVG);
     renderer.resize(420, 150);
     const context = renderer.getContext();
-    const stave = new Stave(10, 40, 40  0);
+    const stave = new Stave(10, 40, 400);
     stave.addClef("treble").setContext(context).draw();
     
     const notes = detunedNotes.map(n => {
