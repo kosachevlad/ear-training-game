@@ -11,7 +11,11 @@ const SCALES = {
   "G Major": ["G3", "A3", "B3", "C4", "D4", "E4", "F#4", "G4"],
   "A Major": ["A3", "B3", "C#4", "D4", "E4", "F#4", "G#4", "A4"],
   "B Major": ["B3", "C#4", "D#4", "E4", "F#4", "G#4", "A#4", "B4"],
-  "A Minor": ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4"],
+  "A Minor nat": ["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"],
+  "A Minor mel": ["A3", "B3", "C4", "D4", "E4", "F#4", "G#4", "A4"],
+  "G Minor nat": ["G3", "A3", "Bb3", "C4", "D4", "Eb4", "F4", "G4"],
+  "G Minor mel": ["G3", "A3", "Bb3", "C4", "D4", "E4", "F#4", "G4"],
+  "C Minor nat": ["C4", "D4", "Eb4", "F4", "G4", "Ab4", "Bb4", "C5"],
 };
 
 const EarTrainingGame = () => {
@@ -23,6 +27,8 @@ const EarTrainingGame = () => {
   const [synth, setSynth] = useState(null);
   const [deviationLevel, setDeviationLevel] = useState(30);
   const [highlightedNote, setHighlightedNote] = useState(null);
+  const [correctionMode, setCorrectionMode] = useState(null);
+
 
   useEffect(() => {
     setNotes(SCALES[selectedScale]); 
@@ -44,6 +50,7 @@ const EarTrainingGame = () => {
     detuned[index].deviation = direction === "sharp" ? deviationLevel : -deviationLevel;
     setDetunedNotes(detuned);
     setHighlightedNote(null);
+    setCorrectionMode(null);
   };
 
   const stopPlayback = () => { 
@@ -77,9 +84,19 @@ const EarTrainingGame = () => {
     }
   };
 
-  const handleNoteSelection = async (note) => {
+  const handleNoteSelection = (note) => {
     const incorrect = detunedNotes.find((n) => n.deviation !== 0);
     if (note === incorrect.note) {
+      setCorrectionMode(incorrect.deviation > 0 ? "sharp" : "flat");
+    } else {
+      setFeedback("Try Again");
+    }
+  };
+
+  const handleCorrection = async (direction) => {
+    const incorrect = detunedNotes.find((n) => n.deviation !== 0);
+    if ((incorrect.deviation > 0 && direction === "flatter") || (incorrect.deviation < 0 && direction === "sharper")) {
+      setScore(score + 1);
       setFeedback("Correct!");
       setScore(score + 1);
       setHighlightedNote(incorrect.note);
@@ -95,6 +112,7 @@ const EarTrainingGame = () => {
     } else {
       setFeedback("Try Again");
     }
+    setCorrectionMode(null);
   };
 
   const renderSheetMusic = () => {
@@ -137,10 +155,10 @@ const EarTrainingGame = () => {
   return (
     <div>
       <h2>Ear Training Game</h2>
-      <label>Select deviationLevel: </label>
+      <label>Select detune: </label>
       <select onChange={(e) => setDeviationLevel(Number(e.target.value))} value={deviationLevel}>
         {[40, 35, 30, 25, 20, 15, 10].map(scale => (
-          <option key={scale} value={scale}>{scale}</option>
+          <option key={scale} value={scale}>{scale + ' cents'}</option>
         ))}
       </select>
       <br />
@@ -155,12 +173,24 @@ const EarTrainingGame = () => {
       <button onClick={playCorrectScale}>Play Correct Scale</button>
       <button onClick={stopPlayback}>Stop</button>
       <div id="sheet"></div>
-      <div className="piano"> 
-        {notes.map((note) => (
-          <button key={note} className="key" onClick={() => handleNoteSelection(note)}>
-            {note}
-          </button>
-        ))}
+      <div class="piano-wrapper">
+        {correctionMode && (
+          <div>
+            <button onClick={() => handleCorrection("sharper")}>Sharper</button>
+          </div>
+        )}
+        <div className="piano"> 
+          {notes.map((note) => (
+            <button key={note} className="key" onClick={() => handleNoteSelection(note)}>
+              {note}
+            </button>
+          ))}
+        </div>
+      {correctionMode && (
+        <div>
+          <button onClick={() => handleCorrection("flatter")}>Flatter</button>
+        </div>
+      )}
       </div>
       {feedback && <p>{feedback}</p>}
       <p>Score: {score}</p>
